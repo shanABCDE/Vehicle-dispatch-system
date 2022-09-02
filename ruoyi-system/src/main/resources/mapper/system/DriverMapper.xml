@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.DriverMapper">
+
+<!--    建立SQL查询结果字段与实体属性的映射关系-->
+    <resultMap type="Driver" id="DriverResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="annum"    column="annum"    />
+        <result property="state"    column="state"    />
+        <result property="relation"    column="relation"    />
+        <result property="drivingYears"    column="driving_years"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectDriverVo">
+        select id, name, annum, state, relation, driving_years, create_time from driver
+    </sql>
+
+    <select id="selectDriverList" parameterType="Driver" resultMap="DriverResult">
+        <include refid="selectDriverVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="annum != null "> and annum = #{annum}</if>
+            <if test="state != null "> and state = #{state}</if>
+            <if test="relation != null  and relation != ''"> and relation = #{relation}</if>
+            <if test="drivingYears != null "> and driving_years = #{drivingYears}</if>
+        </where>
+    </select>
+    
+    <select id="selectDriverById" parameterType="Long" resultMap="DriverResult">
+        <include refid="selectDriverVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDriver" parameterType="Driver" useGeneratedKeys="true" keyProperty="id">
+        insert into driver
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="annum != null">annum,</if>
+            <if test="state != null">state,</if>
+            <if test="relation != null">relation,</if>
+            <if test="drivingYears != null">driving_years,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="annum != null">#{annum},</if>
+            <if test="state != null">#{state},</if>
+            <if test="relation != null">#{relation},</if>
+            <if test="drivingYears != null">#{drivingYears},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+
+    <update id="updateDriver" parameterType="Driver">
+        update driver
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="annum != null">annum = #{annum},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="relation != null">relation = #{relation},</if>
+            <if test="drivingYears != null">driving_years = #{drivingYears},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+
+    <delete id="deleteDriverById" parameterType="Long">
+        delete from driver where id = #{id}
+    </delete>
+
+
+    <delete id="deleteDriverByIds" parameterType="String">
+        delete from driver where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

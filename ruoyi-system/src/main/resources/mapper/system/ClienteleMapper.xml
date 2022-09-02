@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ClienteleMapper">
+
+    <resultMap type="Clientele" id="ClienteleResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="cipher"    column="cipher"    />
+        <result property="gender"    column="gender"    />
+        <result property="balance"    column="balance"    />
+        <result property="relation"    column="relation"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectClienteleVo">
+        select id, name, cipher, gender, balance, relation, create_time from clientele
+    </sql>
+
+    <select id="selectClienteleList" parameterType="Clientele" resultMap="ClienteleResult">
+        <include refid="selectClienteleVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="cipher != null  and cipher != ''"> and cipher = #{cipher}</if>
+            <if test="gender != null "> and gender = #{gender}</if>
+            <if test="balance != null "> and balance = #{balance}</if>
+            <if test="relation != null  and relation != ''"> and relation = #{relation}</if>
+        </where>
+    </select>
+
+    <select id="selectClienteleById" parameterType="Long" resultMap="ClienteleResult">
+        <include refid="selectClienteleVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertClientele" parameterType="Clientele" useGeneratedKeys="true" keyProperty="id">
+        insert into clientele
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="cipher != null">cipher,</if>
+            <if test="gender != null">gender,</if>
+            <if test="balance != null">balance,</if>
+            <if test="relation != null">relation,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="cipher != null">#{cipher},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="balance != null">#{balance},</if>
+            <if test="relation != null">#{relation},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateClientele" parameterType="Clientele">
+        update clientele
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="cipher != null">cipher = #{cipher},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="balance != null">balance = #{balance},</if>
+            <if test="relation != null">relation = #{relation},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteClienteleById" parameterType="Long">
+        delete from clientele where id = #{id}
+    </delete>
+
+    <delete id="deleteClienteleByIds" parameterType="String">
+        delete from clientele where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
